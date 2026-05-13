@@ -81,15 +81,15 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+import dj_database_url  # (This should be at the very top of your file)
+
+# ... lots of other settings ...
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'nifty100_warehouse',
-        'USER': 'nifty_admin',
-        'PASSWORD': 'supersecretpassword',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+    'default': dj_database_url.config(
+        default='postgresql://nifty_admin:YOUR_PASSWORD@localhost:5432/nifty100_warehouse',
+        conn_max_age=600
+    )
 }
 
 
