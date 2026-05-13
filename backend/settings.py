@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-&6!c#(wmj3==u6et3c9qq-6(_w%@_$%eo#aff#&erip*f@^kjs
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['your-app-name.onrender.com', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Your new apps:
+    'corsheaders',
     'rest_framework',
     'api',
 ]
@@ -50,6 +51,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware', # ADD THIS HERE
+    'django.middleware.common.CommonMiddleware',
+    # ... the rest
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -122,3 +128,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+CORS_ALLOW_ALL_ORIGINS = True

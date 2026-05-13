@@ -22,17 +22,18 @@ def get_company_detail(request, symbol):
 @api_view(['GET'])
 def get_company_intelligence(request, symbol):
     try:
-        # 1. Get Company Profile
-        company = DimCompany.objects.get(symbol=symbol)
-        
-        # 2. Get Financial History (Fact Tables)
-        pl_data = FactProfitLoss.objects.filter(symbol=symbol).order_by('-year')
-        bs_data = FactBalanceSheet.objects.filter(symbol=symbol).order_by('-year')
-        
+        # 1. Fetch data inside the 'try' block
+        profile = DimCompany.objects.get(symbol=symbol)
+        pl_data = FactProfitLoss.objects.filter(symbol=symbol)
+        bs_data = FactBalanceSheet.objects.filter(symbol=symbol)
+
+        # 2. Return the success response
         return Response({
-            "profile": CompanySerializer(company).data,
+            "profile": CompanySerializer(profile).data,
             "profit_loss": ProfitLossSerializer(pl_data, many=True).data,
-            "balance_sheet": BalanceSheetSerializer(bs_data, many=True).data
+            "balance_sheet": BalanceSheetSerializer(bs_data, many=True).data,
         })
+        
     except DimCompany.DoesNotExist:
+        # 3. Handle the case where the company isn't found
         return Response({"error": "Company not found"}, status=404)
