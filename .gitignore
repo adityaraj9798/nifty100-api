@@ -1,0 +1,11 @@
+# Python / Virtual Environment
+venv/
+__pycache__/
+*.pyc
+
+# Django
+*.log
+*.sqlite3
+
+# OS generated files
+.DS_Store
