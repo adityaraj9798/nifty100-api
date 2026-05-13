@@ -1,3 +1,4 @@
+import dj_database_url
 """
 Django settings for backend project.
 
@@ -80,8 +81,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-
-import dj_database_url  # (This should be at the very top of your file)
+# (This should be at the very top of your file)
 
 # ... lots of other settings ...
 
