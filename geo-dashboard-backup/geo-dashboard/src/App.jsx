@@ -8,11 +8,14 @@ function App() {
   const [apiKeyData, setApiKeyData] = useState(null);
   const [statusMessage, setStatusMessage] = useState('');
 
+  // Your live Render backend URL
+  const BASE_URL = 'https://nifty100-api.onrender.com';
+
   const handleRegister = async (e) => {
     e.preventDefault();
     setStatusMessage('Registering...');
     try {
-      const response = await axios.post('http://localhost:5000/v1/b2b/register', {
+      const response = await axios.post(`${BASE_URL}/v1/b2b/register`, {
         email, businessName
       });
       setUserId(response.data.user.id);
@@ -25,7 +28,7 @@ function App() {
   const handleGenerateKey = async () => {
     setStatusMessage('Generating key...');
     try {
-      const response = await axios.post('http://localhost:5000/v1/b2b/keys/generate', {
+      const response = await axios.post(`${BASE_URL}/v1/b2b/keys/generate`, {
         userId: userId
       });
       setApiKeyData(response.data.data);
