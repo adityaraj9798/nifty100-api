@@ -5,31 +5,34 @@ import {
 } from 'recharts';
 
 function App() {
-  const [symbol, setSymbol] = useState('ABB'); // The active symbol
+  const [symbol, setSymbol] = useState('ABB'); 
   const [companyData, setCompanyData] = useState(null);
-  const [search, setSearch] = useState(''); // What the user is typing
+  const [search, setSearch] = useState(''); 
   const [loading, setLoading] = useState(true);
+
+  // Update this URL to your live Render backend
+  const BASE_URL = 'https://nifty100-api.onrender.com';
 
   const fetchData = (targetSymbol) => {
     setLoading(true);
-    axios.get(`http://127.0.0.1:8000/api/companies/${targetSymbol}/intelligence/`)
+    axios.get(`${BASE_URL}/api/companies/${targetSymbol}/intelligence/`)
       .then(response => {
         setCompanyData(response.data);
         setLoading(false);
       })
       .catch(err => {
-        alert("Company not found!");
+        console.error(err);
+        alert("Company not found or API connection error!");
         setLoading(false);
       });
   };
 
-  // This triggers whenever the 'symbol' state changes
   useEffect(() => {
     fetchData(symbol);
   }, [symbol]);
 
   if (loading) return <div style={{ padding: '2rem' }}>Loading Financial Intelligence...</div>;
-  if (!companyData) return <div style={{ padding: '2rem' }}>Error loading data. Is Django running?</div>;
+  if (!companyData) return <div style={{ padding: '2rem' }}>Error loading data. Is the backend running?</div>;
 
   const { profile, profit_loss } = companyData;
 
@@ -76,7 +79,6 @@ function App() {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis 
               dataKey={(val) => {
-    // Check if the year is NaN, null, undefined, or "0"
                  const year = val.year;
                  if (!year || year === "0.0" || year === 0 || year === "NaN") {
                       return "N/A";
@@ -105,7 +107,6 @@ function App() {
           </LineChart>
         </ResponsiveContainer>
       </div>
-
     </div>
   );
 }
