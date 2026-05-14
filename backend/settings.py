@@ -29,6 +29,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware', # Must be at the top
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -68,8 +69,7 @@ DATABASES = {
 CORS_ALLOWED_ORIGINS = [
     "https://nifty100-42ta39wuo-aditya-rajs-projects-a6c85f2b.vercel.app",
     "https://nifty100-api.vercel.app",
-]
-CORS_ALLOW_ALL_ORIGINS = False # Safer for production
+]# Safer for production
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
@@ -86,3 +86,6 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+CORS_ALLOW_ALL_ORIGINS = True  # Temporarily allow everything to bypass the block
+CORS_ALLOW_CREDENTIALS = True
+ALLOWED_HOSTS = ['*']  # Temporarily allow all hosts
