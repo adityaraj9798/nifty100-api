@@ -15,9 +15,9 @@ function App() {
     e.preventDefault();
     try {
       // FIX THIS LINE BELOW:
-      await axios.post('https://nifty100-api.onrender.com/v1/b2b/register', { 
-        email, 
-        businessName 
+      const response = await axios.post('https://nifty100-api.onrender.com/api/register/', { 
+          email, 
+          businessName 
       });
       setIsRegistered(true);
       fetchData(symbol);

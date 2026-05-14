@@ -20,15 +20,25 @@ function App() {
   // Registration Handler
   const handleRegister = async (e) => {
     e.preventDefault();
+    setStatusMessage('Registering...');
     try {
-      await axios.post(`${BASE_URL}/v1/b2b/register`, { email, businessName });
-      setIsRegistered(true);
-      fetchData(symbol); // Load data after registration
+      // We are using the exact path Django expects
+      const response = await axios.post(`${BASE_URL}/v1/b2b/register`, { 
+          email, 
+          businessName 
+      });
+
+      // Update the state based on what your backend actually sends back
+      setUserId(response.data.user.id); 
+      setStatusMessage('Registration successful!');
     } catch (error) {
-      alert(`Registration failed: ${error.response?.data?.error || error.message}`);
+      const errorMsg = error.response?.data?.error || error.message;
+      setStatusMessage(`Error: ${errorMsg}`);
+      // If you get a 404 here, it means '/v1/b2b/register' is wrong in urls.py
+      console.log("Check your Django urls.py for the path!");
     }
   };
-
+  
   const fetchData = (targetSymbol) => {
     setLoading(true);
     axios.get(`${BASE_URL}/api/companies/${targetSymbol}/intelligence/`)
