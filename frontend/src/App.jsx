@@ -22,23 +22,21 @@ function App() {
     e.preventDefault();
     setStatusMessage('Registering...');
     try {
-      // We are using the exact path Django expects
-      const response = await axios.post(`${BASE_URL}/v1/b2b/register`, { 
+      // This MUST match the path in your backend urls.py exactly
+      const response = await axios.post(`${BASE_URL}/api/register/`, { 
           email, 
           businessName 
       });
 
-      // Update the state based on what your backend actually sends back
-      setUserId(response.data.user.id); 
+      setUserId(response.data.user.id);
       setStatusMessage('Registration successful!');
     } catch (error) {
-      const errorMsg = error.response?.data?.error || error.message;
-      setStatusMessage(`Error: ${errorMsg}`);
-      // If you get a 404 here, it means '/v1/b2b/register' is wrong in urls.py
-      console.log("Check your Django urls.py for the path!");
+      // If you get a 404 here, double check the slash at the end of the URL
+      console.error("Error status:", error.response?.status);
+      alert(`Registration failed: ${error.response?.data?.error || error.message}`);
     }
   };
-  
+
   const fetchData = (targetSymbol) => {
     setLoading(true);
     axios.get(`${BASE_URL}/api/companies/${targetSymbol}/intelligence/`)
