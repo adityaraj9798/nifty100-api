@@ -13,15 +13,16 @@ function App() {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    setStatusMessage('Registering...');
     try {
-      const response = await axios.post(`${BASE_URL}/v1/b2b/register`, {
-        email, businessName
+      // FIX THIS LINE BELOW:
+      await axios.post('https://nifty100-api.onrender.com/v1/b2b/register', { 
+        email, 
+        businessName 
       });
-      setUserId(response.data.user.id);
-      setStatusMessage('Registration successful! Now generate your key.');
+      setIsRegistered(true);
+      fetchData(symbol);
     } catch (error) {
-      setStatusMessage(`Error: ${error.response?.data?.error || error.message}`);
+      alert(`Registration failed: ${error.response?.data?.error || error.message}`);
     }
   };
 
