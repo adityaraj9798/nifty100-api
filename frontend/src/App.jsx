@@ -8,10 +8,26 @@ function App() {
   const [symbol, setSymbol] = useState('ABB'); 
   const [companyData, setCompanyData] = useState(null);
   const [search, setSearch] = useState(''); 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false); // Set to false initially if you want to show form first
+  
+  // Registration state
+  const [email, setEmail] = useState('');
+  const [businessName, setBusinessName] = useState('');
+  const [isRegistered, setIsRegistered] = useState(false);
 
-  // Update this URL to your live Render backend
   const BASE_URL = 'https://nifty100-api.onrender.com';
+
+  // Registration Handler
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post(`${BASE_URL}/v1/b2b/register`, { email, businessName });
+      setIsRegistered(true);
+      fetchData(symbol); // Load data after registration
+    } catch (error) {
+      alert(`Registration failed: ${error.response?.data?.error || error.message}`);
+    }
+  };
 
   const fetchData = (targetSymbol) => {
     setLoading(true);
@@ -28,18 +44,31 @@ function App() {
   };
 
   useEffect(() => {
-    fetchData(symbol);
-  }, [symbol]);
+    if (isRegistered) fetchData(symbol);
+  }, [symbol, isRegistered]);
+
+  // UI: Show registration form if not registered
+  if (!isRegistered) {
+    return (
+      <div style={{ maxWidth: '500px', margin: '50px auto', textAlign: 'center' }}>
+        <h1>SkillPath B2B Portal</h1>
+        <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <p>Register your business to access dashboard.</p>
+          <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required style={{padding:'10px'}} />
+          <input type="text" placeholder="Business Name" value={businessName} onChange={(e) => setBusinessName(e.target.value)} required style={{padding:'10px'}} />
+          <button type="submit" style={{ padding: '10px', backgroundColor: '#6366f1', color: 'white', border: 'none', cursor: 'pointer' }}>Register Business</button>
+        </form>
+      </div>
+    );
+  }
 
   if (loading) return <div style={{ padding: '2rem' }}>Loading Financial Intelligence...</div>;
-  if (!companyData) return <div style={{ padding: '2rem' }}>Error loading data. Is the backend running?</div>;
+  if (!companyData) return <div style={{ padding: '2rem' }}>Error loading data.</div>;
 
   const { profile, profit_loss } = companyData;
 
   return (
     <div style={{ padding: '2rem', fontFamily: 'sans-serif', maxWidth: '1000px', margin: '0 auto' }}>
-      
-      {/* Search Bar */}
       <div style={{ marginBottom: '2rem', display: 'flex', gap: '10px' }}>
         <input 
           type="text" 
@@ -53,7 +82,6 @@ function App() {
         </button>
       </div>
 
-      {/* Profile Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
         <img 
            src={profile.logo_url} 
@@ -67,43 +95,19 @@ function App() {
         </div>
       </div>
       
-      <p style={{ color: '#555', lineHeight: '1.5', marginBottom: '3rem' }}>
-        {profile.description}
-      </p>
+      <p style={{ color: '#555', lineHeight: '1.5', marginBottom: '3rem' }}>{profile.description}</p>
 
-      {/* Interactive Recharts Graph */}
       <h2>Revenue vs Net Profit (₹ Crores)</h2>
       <div style={{ width: '100%', height: '400px', backgroundColor: '#f9f9f9', padding: '1rem', borderRadius: '8px' }}>
         <ResponsiveContainer>
-          <LineChart data={profit_loss} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+          <LineChart data={profit_loss}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis 
-              dataKey={(val) => {
-                 const year = val.year;
-                 if (!year || year === "0.0" || year === 0 || year === "NaN") {
-                      return "N/A";
-                 }
-                 return year;
-              }} 
-            />
+            <XAxis dataKey="year" />
             <YAxis />
             <Tooltip />
             <Legend />
-            <Line 
-              type="monotone" 
-              dataKey="revenue" 
-              name="Revenue" 
-              stroke="#8884d8" 
-              strokeWidth={3} 
-              activeDot={{ r: 8 }} 
-            />
-            <Line 
-              type="monotone" 
-              dataKey="net_profit" 
-              name="Net Profit" 
-              stroke="#82ca9d" 
-              strokeWidth={3} 
-            />
+            <Line type="monotone" dataKey="revenue" stroke="#8884d8" strokeWidth={3} />
+            <Line type="monotone" dataKey="net_profit" stroke="#82ca9d" strokeWidth={3} />
           </LineChart>
         </ResponsiveContainer>
       </div>

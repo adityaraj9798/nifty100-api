@@ -66,6 +66,7 @@ DATABASES = {
 
 # CORS Settings
 CORS_ALLOWED_ORIGINS = [
+    "https://nifty100-42ta39wuo-aditya-rajs-projects-a6c85f2b.vercel.app",
     "https://nifty100-api.vercel.app",
 ]
 CORS_ALLOW_ALL_ORIGINS = False # Safer for production
